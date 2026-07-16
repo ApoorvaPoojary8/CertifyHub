@@ -1,39 +1,44 @@
 import jwt from "jsonwebtoken";
 
 const authMiddleware = (req, res, next) => {
+
   try {
-    const authHeader = req.headers.authorization;
+
+    console.log("AUTH HEADER:", req.headers.authorization);
+
+    const authHeader =
+      req.headers.authorization;
 
     if (!authHeader) {
       return res.status(401).json({
-        success: false,
-        message: "Access denied. No token provided."
+        message: "No token provided"
       });
     }
 
-    const token = authHeader.split(" ")[1];
+    const token =
+      authHeader.split(" ")[1];
 
-    if (!token) {
-      return res.status(401).json({
-        success: false,
-        message: "Invalid token format."
-      });
-    }
+    console.log("TOKEN:", token);
 
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET
-    );
+    const decoded =
+      jwt.verify(
+        token,
+        "certifyhubsecret"
+      );
 
-    req.user = decoded;
+    req.organizerId =
+      decoded.id;
 
     next();
 
   } catch (error) {
-    return res.status(401).json({
-      success: false,
-      message: "Unauthorized access."
+
+    console.log(error);
+
+    res.status(401).json({
+      message: error.message
     });
+
   }
 };
 

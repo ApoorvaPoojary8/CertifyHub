@@ -4,6 +4,7 @@ import cors from "cors";
 import eventRoutes from "./routes/eventRoutes.js";
 import participantRoutes from "./routes/participantRoutes.js";
 import certificateRoutes from "./routes/certificateRoutes.js";
+import authRoutes from "./routes/authRoutes.js";
 
 const app = express();
 
@@ -12,6 +13,7 @@ app.use(cors());
 app.use(express.json());
 
 // Test Route
+app.use("/api/auth", authRoutes);
 app.get("/", (req, res) => {
   res.json({
     success: true,
