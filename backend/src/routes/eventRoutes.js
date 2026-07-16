@@ -12,9 +12,9 @@ import {
 
 const router = express.Router();
 
-router.post("/", authMiddleware,createEvent);
-router.get("/", getEvents);
-router.delete("/:id", deleteEvent);
+router.post("/", authMiddleware,authMiddleware,createEvent);
+router.get("/", authMiddleware,getEvents);
+router.delete("/:id", authMiddleware,deleteEvent);
 router.post(
   "/:id/generate-qr",
   authMiddleware,

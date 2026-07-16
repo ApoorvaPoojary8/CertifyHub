@@ -5,7 +5,10 @@ from "../services/qrService.js";
 // Create Event
 export const createEvent = async (req, res) => {
   try {
-    const event = await Event.create(req.body);
+   const event = await Event.create({
+  ...req.body,
+  organizerId: req.organizerId
+});
 
     res.status(201).json({
       success: true,
@@ -19,7 +22,9 @@ export const createEvent = async (req, res) => {
 // Get All Events
 export const getEvents = async (req, res) => {
   try {
-    const events = await Event.find();
+    const events = await Event.find({
+  organizerId: req.organizerId
+});
 
     res.status(200).json({
       success: true,
