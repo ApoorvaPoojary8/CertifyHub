@@ -1,12 +1,25 @@
 import mongoose from "mongoose";
 
-const eventSchema = new mongoose.Schema({
+const eventSchema = new mongoose.Schema(
+{
   name: String,
   description: String,
   date: Date,
-  organizer: String
-}, {
-  timestamps: true
-});
+  organizer: String,
 
-export default mongoose.model("Event", eventSchema);
+  
+
+  googleFormLink: String,
+registrationQr: String,
+templateUrl: String,
+
+},
+{
+  timestamps: true
+}
+);
+
+export default mongoose.model(
+  "Event",
+  eventSchema
+);

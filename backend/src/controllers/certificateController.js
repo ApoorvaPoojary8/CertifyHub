@@ -1,16 +1,55 @@
 import Certificate from "../models/Certificate.js";
+import fs from "fs";
+import path from "path";
+import { generateCertificatePDF }
+from "../services/pdfService.js";
 
 // Create Certificate
-export const createCertificate = async (req, res) => {
+export const createCertificate = async (
+  req,
+  res
+) => {
   try {
-    const certificate = await Certificate.create(req.body);
+
+    const {
+      participantId,
+      eventId,
+      certificateId
+    } = req.body;
+
+    const pdfBytes =
+      await generateCertificatePDF(
+        "Apoorva",
+        "AI Workshop",
+        certificateId
+      );
+
+    const pdfPath =
+`uploads/certificates/${certificateId}.pdf`;
+
+    fs.writeFileSync(
+      pdfPath,
+      pdfBytes
+    );
+
+    const certificate =
+      await Certificate.create({
+        participantId,
+        eventId,
+        certificateId,
+        pdfUrl: pdfPath,
+        status: "VERIFIED"
+      });
 
     res.status(201).json({
       success: true,
       data: certificate
     });
+
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({
+      message: error.message
+    });
   }
 };
 
