@@ -8,7 +8,8 @@ import {
   deleteEvent,
   generateQrForEvent,
   uploadTemplate,
-  uploadCSV
+  uploadCSV,
+  generateEventCertificates
 } from "../controllers/eventController.js";
 
 const router = express.Router();
@@ -32,6 +33,12 @@ router.post(
   authMiddleware,
   upload.single("csv"),
   uploadCSV
+);
+
+router.post(
+  "/:id/generate-certificates",
+  authMiddleware,
+  generateEventCertificates
 );
 
 export default router;

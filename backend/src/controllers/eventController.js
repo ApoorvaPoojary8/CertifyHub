@@ -3,6 +3,10 @@ import { generateEventQR }
 from "../services/qrService.js";
 import { readExcelFile }
 from "../services/csvService.js";
+import {
+  generateCertificates
+}
+from "../services/certificateService.js";
 
 // Create Event
 export const createEvent = async (req, res) => {
@@ -143,6 +147,47 @@ async (req,res)=>{
 
     res.status(500).json({
       message:error.message
+    });
+
+  }
+
+};
+
+export const generateEventCertificates =
+async (req, res) => {
+
+  try {
+
+    const event =
+      await Event.findById(
+        req.params.id
+      );
+
+    if (!event) {
+      return res.status(404).json({
+        message: "Event not found"
+      });
+    }
+
+    const participants =
+      req.app.locals.csvData || [];
+
+    const files =
+      await generateCertificates(
+        participants,
+        event.name
+      );
+
+    res.status(200).json({
+      success: true,
+      total: files.length,
+      files
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      message: error.message
     });
 
   }
