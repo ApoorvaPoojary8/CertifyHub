@@ -1,15 +1,27 @@
 import multer from "multer";
 
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/templates");
+
+  destination: (req,file,cb)=>{
+
+    if(file.fieldname==="csv"){
+      cb(null,"uploads/csv");
+    }
+    else{
+      cb(null,"uploads/templates");
+    }
+
   },
 
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + "-" + file.originalname);
+  filename:(req,file,cb)=>{
+    cb(
+      null,
+      Date.now()+"-"+file.originalname
+    );
   }
+
 });
 
-const upload = multer({ storage });
+const upload = multer({storage});
 
 export default upload;

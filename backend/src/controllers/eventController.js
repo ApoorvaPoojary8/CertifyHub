@@ -1,6 +1,8 @@
 import Event from "../models/Event.js";
 import { generateEventQR }
 from "../services/qrService.js";
+import { readExcelFile }
+from "../services/csvService.js";
 
 // Create Event
 export const createEvent = async (req, res) => {
@@ -121,4 +123,28 @@ export const uploadTemplate = async (req, res) => {
     });
 
   }
+};
+
+export const uploadCSV =
+async (req,res)=>{
+
+  try{
+
+    const data =
+    readExcelFile(req.file.path);
+
+    res.status(200).json({
+      success:true,
+      rows:data.length,
+      data
+    });
+
+  }catch(error){
+
+    res.status(500).json({
+      message:error.message
+    });
+
+  }
+
 };
