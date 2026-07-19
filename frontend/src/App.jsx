@@ -4,6 +4,7 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import Dashboard from "./pages/Dashboard";
 import Events from "./pages/Events";
+import Certificates from "./pages/Certificates";
 import "./App.css";
 
 function App() {
@@ -15,6 +16,10 @@ function App() {
          {/* Dashboard Route */}
       <Route path="/dashboard" element={<Dashboard />} />
        <Route path="/events" element={<Events />} />
+       <Route
+  path="/dashboard/certificates"
+  element={<Certificates />}
+/>
 
     </Routes>
   );
