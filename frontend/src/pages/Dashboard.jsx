@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Sidebar from "../components/Sidebar";
+import Sidebar from "../components/layout/Sidebar";
 import api from "../api/api";
 import StatsCard from "../components/StatsCard";
 import EventTable from "../components/EventTable";
