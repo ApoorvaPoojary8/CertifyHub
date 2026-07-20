@@ -5,6 +5,7 @@ import RegisterPage from "./pages/RegisterPage";
 import Dashboard from "./pages/Dashboard";
 import Events from "./pages/Events";
 import Certificates from "./pages/Certificates";
+import Profile from "./pages/Profile";
 import "./App.css";
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
   path="/dashboard/certificates"
   element={<Certificates />}
 />
+<Route path="/profile" element={<Profile />} />
 
     </Routes>
   );

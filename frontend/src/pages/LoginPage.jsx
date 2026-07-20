@@ -32,14 +32,19 @@ const LoginPage = () => {
   setLoading(true);
 
   try {
-    const response = await api.post("/auth/login", {
-      email: formData.email,
-      password: formData.password,
-    });
+   const response = await api.post("/auth/login", {
+  email: formData.email,
+  password: formData.password,
+});
 
-    localStorage.setItem("token", response.data.token);
+localStorage.setItem("token", response.data.token);
 
-    navigate("/dashboard");
+localStorage.setItem(
+  "organizer",
+  JSON.stringify(response.data.organizer)
+);
+
+navigate("/dashboard");
   } catch (err) {
     setError(
       err.response?.data?.message || "Login failed"
