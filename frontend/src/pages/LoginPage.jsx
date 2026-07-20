@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Mail, Lock, ArrowRight, Eye, EyeOff } from "lucide-react";
+import api from "../api/axios";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
@@ -12,6 +14,7 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -22,22 +25,29 @@ const LoginPage = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+ const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    setError("");
-    setLoading(true);
+  setError("");
+  setLoading(true);
 
-    try {
-      // Backend login API will be connected here later
-      console.log(formData);
-    } catch (err) {
-      setError("Login failed");
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    const response = await api.post("/auth/login", {
+      email: formData.email,
+      password: formData.password,
+    });
 
+    localStorage.setItem("token", response.data.token);
+
+    navigate("/dashboard");
+  } catch (err) {
+    setError(
+      err.response?.data?.message || "Login failed"
+    );
+  } finally {
+    setLoading(false);
+  }
+};
   return (
     <div className="min-h-screen bg-slate-50 pt-20">
      <header className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-50">

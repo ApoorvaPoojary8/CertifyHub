@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Sidebar from "../components/layout/Sidebar";
-import api from "../api/api";
+import api from "../api/axios";
 import StatsCard from "../components/StatsCard";
 import EventTable from "../components/EventTable";
 import {

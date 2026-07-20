@@ -1,5 +1,8 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+
+import { Link, useNavigate } from "react-router-dom";
+import api from "../api/axios";
+
 import {
   User,
   Mail,
@@ -19,6 +22,7 @@ const RegisterPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value, checked, type } = e.target;
@@ -30,20 +34,34 @@ const RegisterPage = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    setLoading(true);
-    setError("");
+  setLoading(true);
+  setError("");
 
-    try {
-      // Backend API will be connected later
-      console.log(formData);
-    } catch (err) {
-      setError("Registration failed");
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    const response = await api.post("/auth/register", {
+      name: formData.name,
+      email: formData.email,
+      password: formData.password,
+    });
+
+    alert("Registration Successful!");
+
+    navigate("/login");
+
+  } catch (err) {
+  console.log(err);
+  console.log(err.response);
+  console.log(err.response?.data);
+
+  setError(
+    err.response?.data?.message || "Registration failed"
+  );
+} finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="min-h-screen bg-slate-50 pt-20">
