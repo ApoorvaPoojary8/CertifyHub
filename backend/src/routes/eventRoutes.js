@@ -14,7 +14,7 @@ import {
 
 const router = express.Router();
 
-router.post("/", authMiddleware,authMiddleware,createEvent);
+router.post("/",authMiddleware,createEvent);
 router.get("/", authMiddleware,getEvents);
 router.delete("/:id", authMiddleware,deleteEvent);
 router.post(

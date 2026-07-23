@@ -1,28 +1,58 @@
 import mongoose from "mongoose";
 
 const eventSchema = new mongoose.Schema(
-{
-  organizerId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Organizer"
+  {
+    organizerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Organizer",
+      required: true,
+    },
+
+    title: {
+      type: String,
+      required: true,
+    },
+
+    description: {
+      type: String,
+      required: true,
+    },
+
+    date: {
+      type: Date,
+      required: true,
+    },
+
+    time: {
+      type: String,
+    },
+
+    venue: {
+      type: String,
+    },
+
+    capacity: {
+      type: Number,
+    },
+
+    registrationLink: {
+      type: String,
+      required: true,
+    },
+
+    registrationQr: {
+      type: String,
+      default: "",
+    },
+
+    templateUrl: {
+      type: String,
+      default: "",
+    },
   },
-
-  name: String,
-  description: String,
-  date: Date,
-  organizer: String,
-
-  googleFormLink: String,
-  registrationQr: String,
-  templateUrl: String,
-
-},
-{
-  timestamps: true
-}
+  {
+    timestamps: true,
+  }
 );
 
-export default mongoose.model(
-  "Event",
-  eventSchema
-);
+export default mongoose.model("Event", eventSchema);

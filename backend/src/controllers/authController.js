@@ -79,10 +79,15 @@ export const login = async (req, res) => {
       }
     );
 
-    res.status(200).json({
-      success: true,
-      token
-    });
+   res.status(200).json({
+  success: true,
+  token,
+  organizer: {
+    id: organizer._id,
+    name: organizer.name,
+    email: organizer.email,
+  },
+});
 
   } catch (error) {
 

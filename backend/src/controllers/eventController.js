@@ -1,113 +1,120 @@
 import Event from "../models/Event.js";
-import { generateEventQR }
-from "../services/qrService.js";
-import { readExcelFile }
-from "../services/csvService.js";
-import {
-  generateCertificates
-}
-from "../services/certificateService.js";
+import { generateEventQR } from "../services/qrService.js";
+import { readExcelFile } from "../services/csvService.js";
+import { generateCertificates } from "../services/certificateService.js";
 
+// =======================
 // Create Event
+// =======================
 export const createEvent = async (req, res) => {
   try {
-   const event = await Event.create({
-  ...req.body,
-  organizerId: req.organizerId
-});
+    const event = await Event.create({
+      ...req.body,
+      organizerId: req.organizerId,
+    });
+
+    // Generate QR using Google Form Link
+ const qrData = await generateEventQR(
+  event.registrationLink,
+  event._id
+);
+    // Save QR path
+    event.registrationQr = qrData.qrPath;
+
+    await event.save();
 
     res.status(201).json({
       success: true,
-      data: event
+      data: event,
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({
+      message: error.message,
+    });
   }
 };
 
+// =======================
 // Get All Events
+// =======================
 export const getEvents = async (req, res) => {
   try {
     const events = await Event.find({
-  organizerId: req.organizerId
-});
+      organizerId: req.organizerId,
+    }).sort({ createdAt: -1 });
 
     res.status(200).json({
       success: true,
-      data: events
+      data: events,
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({
+      message: error.message,
+    });
   }
 };
 
+// =======================
 // Delete Event
+// =======================
 export const deleteEvent = async (req, res) => {
   try {
     await Event.findByIdAndDelete(req.params.id);
 
     res.status(200).json({
       success: true,
-      message: "Event deleted"
+      message: "Event deleted",
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-export const generateQrForEvent =
-async (req,res) => {
-
-  try {
-
-    const event =
-    await Event.findById(
-      req.params.id
-    );
-
-    if(!event){
-      return res.status(404).json({
-        message:"Event not found"
-      });
-    }
-
-    const qrData =
-    await generateEventQR(
-      event._id
-    );
-
-    event.registrationLink =
-      qrData.registrationLink;
-
-    event.registrationQr =
-      qrData.qrPath;
-
-    await event.save();
-
-    res.json({
-      success:true,
-      data:event
-    });
-
-  } catch(error){
-
     res.status(500).json({
-      message:error.message
+      message: error.message,
     });
-
   }
 };
 
-export const uploadTemplate = async (req, res) => {
+// =======================
+// Regenerate QR
+// =======================
+export const generateQrForEvent = async (req, res) => {
   try {
-
-    const event = await Event.findById(
-      req.params.id
-    );
+    const event = await Event.findById(req.params.id);
 
     if (!event) {
       return res.status(404).json({
-        message: "Event not found"
+        message: "Event not found",
+      });
+    }
+
+const qrData = await generateEventQR(
+    event.registrationLink,
+    event._id
+);
+
+    event.registrationQr = qrData.qrPath;
+
+    await event.save();
+
+    res.status(200).json({
+      success: true,
+      data: event,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+// =======================
+// Upload Certificate Template
+// =======================
+export const uploadTemplate = async (req, res) => {
+  try {
+    const event = await Event.findById(req.params.id);
+
+    if (!event) {
+      return res.status(404).json({
+        message: "Event not found",
       });
     }
 
@@ -115,81 +122,67 @@ export const uploadTemplate = async (req, res) => {
 
     await event.save();
 
-    res.json({
+    res.status(200).json({
       success: true,
-      data: event
+      data: event,
     });
-
   } catch (error) {
-
     res.status(500).json({
-      message: error.message
+      message: error.message,
     });
-
   }
 };
 
-export const uploadCSV =
-async (req,res)=>{
+// =======================
+// Upload CSV
+// =======================
+export const uploadCSV = async (req, res) => {
+  try {
+    const data = readExcelFile(req.file.path);
 
-  try{
-
-    const data =
-    readExcelFile(req.file.path);
+    // Store temporarily
+    req.app.locals.csvData = data;
 
     res.status(200).json({
-      success:true,
-      rows:data.length,
-      data
+      success: true,
+      rows: data.length,
+      data,
     });
-
-  }catch(error){
-
+  } catch (error) {
     res.status(500).json({
-      message:error.message
+      message: error.message,
     });
-
   }
-
 };
 
-export const generateEventCertificates =
-async (req, res) => {
-
+// =======================
+// Generate Certificates
+// =======================
+export const generateEventCertificates = async (req, res) => {
   try {
-
-    const event =
-      await Event.findById(
-        req.params.id
-      );
+    const event = await Event.findById(req.params.id);
 
     if (!event) {
       return res.status(404).json({
-        message: "Event not found"
+        message: "Event not found",
       });
     }
 
-    const participants =
-      req.app.locals.csvData || [];
+    const participants = req.app.locals.csvData || [];
 
-    const files =
-      await generateCertificates(
-        participants,
-        event.name
-      );
+    const files = await generateCertificates(
+      participants,
+      event.name
+    );
 
     res.status(200).json({
       success: true,
       total: files.length,
-      files
+      files,
     });
-
   } catch (error) {
-
     res.status(500).json({
-      message: error.message
+      message: error.message,
     });
-
   }
-
 };

@@ -5,8 +5,12 @@ import eventRoutes from "./routes/eventRoutes.js";
 import participantRoutes from "./routes/participantRoutes.js";
 import certificateRoutes from "./routes/certificateRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
-
+import path from "path";
+import { fileURLToPath } from "url";
 const app = express();
+const __filename = fileURLToPath(import.meta.url);
+
+
 
 // Middleware
 app.use(cors());
@@ -23,6 +27,13 @@ app.get("/", (req, res) => {
 
 // Routes
 app.use("/api/events", eventRoutes);
+const __dirname = path.dirname(__filename);
+
+app.use(
+  "/uploads",
+  express.static(path.join(__dirname, "../uploads"))
+);
+
 app.use("/api/participants", participantRoutes);
 app.use("/api/certificates", certificateRoutes);
 app.use(
