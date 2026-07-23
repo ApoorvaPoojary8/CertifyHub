@@ -1,4 +1,5 @@
 import { useState } from "react";
+import api from "../../api/axios";
 
 export default function CreateEventForm() {
   const [formData, setFormData] = useState({
@@ -18,14 +19,42 @@ export default function CreateEventForm() {
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    console.log(formData);
+  try {
 
-    // Backend API Call Here
-    // await axios.post("/api/events/create", formData);
-  };
+    const token = localStorage.getItem("token");
+
+    const response = await api.post(
+      "/events",
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    alert("Event created successfully!");
+
+    console.log(response.data);
+
+    setFormData({
+      title: "",
+      description: "",
+      date: "",
+      time: "",
+      venue: "",
+      capacity: "",
+      registrationLink: "",
+    });
+
+  } catch (error) {
+    console.log(error);
+    alert("Failed to create event");
+  }
+};
 
   return (
     <div className="bg-white rounded-2xl shadow-md p-8 mb-8">

@@ -17,7 +17,7 @@ export default function Events() {
 
         {/* Page Content */}
         <main className="pt-20 px-8 pb-8">
-          <CreateEventForm />
+          
 
           <div className="mt-10">
             <EventGrid />

@@ -92,13 +92,13 @@ export default function Sidebar() {
 
       <div className="p-5 border-t">
 
-        <button className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold">
-
-          <PlusCircle size={20} />
-
-          Create Event
-
-        </button>
+       <NavLink
+  to="/events/create"
+  className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold"
+>
+  <PlusCircle size={20} />
+  Create Event
+</NavLink>
 
         <button
           className="w-full mt-4 flex items-center justify-center gap-2 border py-3 rounded-lg hover:bg-gray-100"
