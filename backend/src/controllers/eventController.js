@@ -133,23 +133,78 @@ export const uploadTemplate = async (req, res) => {
   }
 };
 
-// =======================
+
 // Upload CSV
-// =======================
 export const uploadCSV = async (req, res) => {
   try {
     const data = readExcelFile(req.file.path);
 
-    // Store temporarily
-    req.app.locals.csvData = data;
+    await Participant.deleteMany({
+      eventId: req.params.id,
+    });
+
+    const participants = data.map((row) => {
+      const normalized = {};
+
+      // Normalize all column names
+      Object.keys(row).forEach((key) => {
+        const cleanKey = key
+          .trim()
+          .toLowerCase()
+          .replace(/[\s_-]/g, ""); // remove spaces, _ and -
+
+        normalized[cleanKey] = row[key];
+      });
+
+      return {
+        eventId: req.params.id,
+
+        name:
+          normalized.name ||
+          normalized.fullname,
+
+        email:
+          normalized.email ||
+          normalized.emailaddress ||
+          normalized.emailid ||
+          normalized.mail,
+
+        usn:
+          normalized.usn ||
+          normalized.registerno ||
+          normalized.registernumber ||
+          normalized.registrationnumber ||
+          normalized.studentid,
+      };
+    });
+
+    // Validate before inserting
+    const invalidRows = participants.filter(
+      (p) => !p.name || !p.email
+    );
+
+    if (invalidRows.length > 0) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "CSV must contain valid Name and Email columns.",
+        invalidRows,
+      });
+    }
+
+    await Participant.insertMany(participants);
 
     res.status(200).json({
       success: true,
-      rows: data.length,
-      data,
+      total: participants.length,
+      participants,
     });
+
   } catch (error) {
+    console.error(error);
+
     res.status(500).json({
+      success: false,
       message: error.message,
     });
   }
@@ -217,8 +272,12 @@ export const getEventById = async (req, res) => {
 
 export const getParticipants = async (req, res) => {
   try {
+    // const data = readExcelFile(req.file.path);
+
+
     const participants = await Participant.find({
       eventId: req.params.id,
+      
     });
 
     res.status(200).json(participants);
