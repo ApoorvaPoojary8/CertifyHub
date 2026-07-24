@@ -1,15 +1,34 @@
 import mongoose from "mongoose";
 
-const participantSchema = new mongoose.Schema({
-  eventId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Event"
-  },
-  name: String,
-  email: String
-});
+const participantSchema = new mongoose.Schema(
+  {
+    eventId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Event",
+      required: true,
+    },
 
-export default mongoose.model(
-  "Participant",
-  participantSchema
+    name: {
+      type: String,
+      required: true,
+    },
+
+    email: {
+      type: String,
+      required: true,
+    },
+
+    usn: {
+      type: String,
+    },
+
+    department: {
+      type: String,
+    },
+  },
+  {
+    timestamps: true,
+  }
 );
+
+export default mongoose.model("Participant", participantSchema);
