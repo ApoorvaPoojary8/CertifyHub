@@ -5,6 +5,7 @@ from "../middleware/authMiddleware.js";
 import {
   createEvent,
   getEvents,
+  getEventById,
   deleteEvent,
   generateQrForEvent,
   uploadTemplate,
@@ -16,6 +17,7 @@ const router = express.Router();
 
 router.post("/",authMiddleware,createEvent);
 router.get("/", authMiddleware,getEvents);
+router.get("/:id", authMiddleware, getEventById);
 router.delete("/:id", authMiddleware,deleteEvent);
 router.post(
   "/:id/generate-qr",
