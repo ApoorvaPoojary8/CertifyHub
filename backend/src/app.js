@@ -7,6 +7,7 @@ import certificateRoutes from "./routes/certificateRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import path from "path";
 import { fileURLToPath } from "url";
+import dashboardRoutes from "./routes/dashboardRoutes.js";
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 
@@ -28,6 +29,7 @@ app.get("/", (req, res) => {
 // Routes
 app.use("/api/events", eventRoutes);
 const __dirname = path.dirname(__filename);
+app.use("/api/dashboard", dashboardRoutes);
 
 app.use(
   "/uploads",
