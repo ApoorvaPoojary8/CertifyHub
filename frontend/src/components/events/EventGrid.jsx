@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import api from "../../api/axios";
 import { Calendar, MapPin, Trash2, Download } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function EventGrid() {
   const [events, setEvents] = useState([]);
+  const navigate = useNavigate();
 
   const fetchEvents = async () => {
     try {
@@ -51,14 +53,11 @@ export default function EventGrid() {
 
   return (
     <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
-
       {events.map((event) => (
-
         <div
           key={event._id}
           className="bg-white rounded-2xl shadow-lg p-6"
         >
-
           <h2 className="text-xl font-bold">
             {event.title}
           </h2>
@@ -68,7 +67,6 @@ export default function EventGrid() {
           </p>
 
           <div className="mt-4 space-y-2 text-sm">
-
             <div className="flex items-center gap-2">
               <Calendar size={16} />
               {event.date}
@@ -78,12 +76,10 @@ export default function EventGrid() {
               <MapPin size={16} />
               {event.venue}
             </div>
-
           </div>
 
           {event.registrationQr && (
             <div className="mt-6 flex flex-col items-center">
-
               <img
                 src={`http://localhost:5000/${event.registrationQr}`}
                 alt="QR Code"
@@ -98,22 +94,27 @@ export default function EventGrid() {
                 <Download size={18} />
                 Download QR
               </a>
-
             </div>
           )}
 
+          {/* View Details Button */}
+          <button
+            onClick={() => navigate(`/events/${event._id}`)}
+            className="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg"
+          >
+            View Details
+          </button>
+
+          {/* Delete Button */}
           <button
             onClick={() => deleteEvent(event._id)}
-            className="mt-6 w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg flex items-center justify-center gap-2"
+            className="mt-3 w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg flex items-center justify-center gap-2"
           >
             <Trash2 size={18} />
             Delete Event
           </button>
-
         </div>
-
       ))}
-
     </div>
   );
 }
