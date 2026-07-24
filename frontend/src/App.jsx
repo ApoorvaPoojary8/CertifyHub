@@ -7,6 +7,7 @@ import Events from "./pages/Events";
 import CreateEvent from "./pages/CreateEvent";
 import Certificates from "./pages/Certificates";
 import Profile from "./pages/Profile";
+import EventDetails from "./pages/EventDetails";
 
 import "./App.css";
 
@@ -24,6 +25,10 @@ function App() {
   path="/dashboard/certificates"
   element={<Certificates />}
 />
+  <Route
+    path="/events/:id"
+    element={<EventDetails />}
+  />
 <Route path="/profile" element={<Profile />} />
 
 
