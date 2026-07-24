@@ -3,9 +3,9 @@ import { generateEventQR } from "../services/qrService.js";
 import { readExcelFile } from "../services/csvService.js";
 import { generateCertificates } from "../services/certificateService.js";
 
-// =======================
-// Create Event
-// =======================
+import Participant from "../models/Participant.js";
+
+
 export const createEvent = async (req, res) => {
   try {
     const event = await Event.create({
@@ -34,9 +34,9 @@ export const createEvent = async (req, res) => {
   }
 };
 
-// =======================
+
 // Get All Events
-// =======================
+
 export const getEvents = async (req, res) => {
   try {
     const events = await Event.find({
@@ -54,9 +54,9 @@ export const getEvents = async (req, res) => {
   }
 };
 
-// =======================
+
 // Delete Event
-// =======================
+
 export const deleteEvent = async (req, res) => {
   try {
     await Event.findByIdAndDelete(req.params.id);
@@ -72,9 +72,9 @@ export const deleteEvent = async (req, res) => {
   }
 };
 
-// =======================
+
 // Regenerate QR
-// =======================
+
 export const generateQrForEvent = async (req, res) => {
   try {
     const event = await Event.findById(req.params.id);
@@ -209,6 +209,25 @@ export const getEventById = async (req, res) => {
     res.status(500).json({
       success: false,
       message: error.message,
+    });
+  }
+};
+
+
+
+export const getParticipants = async (req, res) => {
+  try {
+    const participants = await Participant.find({
+      eventId: req.params.id,
+    });
+
+    res.status(200).json(participants);
+  } catch (err) {
+    console.error(err);
+
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch participants",
     });
   }
 };

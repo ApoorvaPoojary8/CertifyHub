@@ -10,7 +10,8 @@ import {
   generateQrForEvent,
   uploadTemplate,
   uploadCSV,
-  generateEventCertificates
+  generateEventCertificates,
+  getParticipants
 } from "../controllers/eventController.js";
 
 const router = express.Router();
@@ -42,5 +43,9 @@ router.post(
   authMiddleware,
   generateEventCertificates
 );
-
+router.get(
+  "/:id/participants",
+  authMiddleware,
+  getParticipants
+);
 export default router;
